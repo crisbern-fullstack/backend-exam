@@ -42,6 +42,7 @@ const AddCompany = async (req, res) => {
     //if no image is uploaded, the path will be blank
     if(req.file){
         logo = req.file.path
+        console.log(req.file.mimetype)
     }
 
     try{
