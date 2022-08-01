@@ -12,7 +12,29 @@ const storage = multer.diskStorage({
     }
 })
 
-const upload = multer({storage : storage})
+//needs fixing
+//study express error handler
+const uploadMiddleware = (req, res, next) => {
+    const upload = multer({
+        storage : storage,
+        limits : {
+            fileSize : 6291456
+        }
+    }).single("company-logo")
+
+    upload(req, res, (error) => {
+        if(error instanceof multer.MulterError){
+            res.status(400).json({error : error.message})
+            const err = new Error("Multer Error")
+            next(err)
+        }else if(error){
+            res.status(400).json({error : error.message})
+            const err = new Error("Error Unknowm")
+            next(err)
+        }
+        next()
+    })
+}
 
 //controllers
 const {
@@ -35,13 +57,13 @@ router.get('/all-companies', GetAllCompanies)
 router.get('/company/:id', GetOneCompany)
 
 //Add New Company
-router.post('/new-company', upload.single('company-logo'),AddCompany)
+router.post('/new-company', uploadMiddleware, AddCompany)
 
 //Delete a company
 router.delete('/delete-company/:id', DeleteCompany)
 
 //Update a company
-router.patch('/update-company/:id', upload.single('company-logo'), UpdateCompany)
+router.patch('/update-company/:id', uploadMiddleware, UpdateCompany)
 
 //exporting created routes
 module.exports = router

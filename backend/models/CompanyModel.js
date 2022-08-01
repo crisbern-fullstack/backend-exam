@@ -13,6 +13,21 @@ const customEmailValidator = (email) => {
     return validator.validate(email)
 }
 
+//url validation
+const urlValidator = (url) => {
+    if(url.length === 0){
+        return true
+    }
+
+    try{
+        const urlInput = new URL(url)
+    }catch(error){
+        return false
+    }
+
+    return true
+}
+
 /* Company Schema fields are as follows
 1. Name (required)
 2. email (add validator if input is indeed an email)
@@ -29,7 +44,10 @@ const CompanySchema = new Schema({
         validate: [customEmailValidator, "Invalid email."]
     },
     logo : String,
-    website : String
+    website : {
+        type : String,
+        validate : [urlValidator, "Invalid Company URL"]
+    }
 }, {timestamps:true})
 
 module.exports = mongoose.model("CompanySchema", CompanySchema)
