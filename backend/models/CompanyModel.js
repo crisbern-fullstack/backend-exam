@@ -3,6 +3,16 @@ const validator = require('email-validator')
 
 const Schema = mongoose.Schema
 
+//custom email validation
+//email-validator returns false if blank
+const customEmailValidator = (email) => {
+    if(email.length === 0){
+        return true
+    }
+
+    return validator.validate(email)
+}
+
 /* Company Schema fields are as follows
 1. Name (required)
 2. email (add validator if input is indeed an email)
@@ -16,7 +26,7 @@ const CompanySchema = new Schema({
     },
     email : {
         type : String,
-        validate: [validator.validate, "Invalid email."]
+        validate: [customEmailValidator, "Invalid email."]
     },
     logo : String,
     website : String

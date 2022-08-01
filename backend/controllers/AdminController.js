@@ -1,3 +1,4 @@
+const { request } = require("express")
 const { default: mongoose } = require("mongoose")
 const CompanyModel = require("../models/CompanyModel")
 
@@ -13,7 +14,6 @@ const GetAllCompanies = async (req, res) => {
         res.status(400).json({error:error.message})
     }
 }
-
 
 //Get one company
 //uses _id
@@ -37,13 +37,18 @@ const GetOneCompany = async (req, res) => {
 
 //Add New Company
 const AddCompany = async (req, res) => {
-    const logo = req.file
+    let logo = ''
+
+    //if no image is uploaded, the path will be blank
+    if(req.file){
+        logo = req.file.path
+    }
 
     try{
         const new_company = await CompanyModel.create({
             name: req.body.name, 
             email: req.body.email, 
-            logo: logo.path, 
+            logo: logo, 
             website:req.body.website
         })
         res.status(200).json(new_company)
@@ -75,7 +80,19 @@ const DeleteCompany = async (req, res) => {
 //update company
 const UpdateCompany = async (req, res) => {
     const {id} = req.params
-    const logo = req.file
+    let update = {}
+
+    if(!req.file){
+        update = {...req.body}
+    }
+    else{
+        update = {
+            name : req.body.name,
+            email : req.body.email,
+            logo : req.file.path,
+            website : req.body.website
+        }
+    }
 
     //checks if passed id is valid
     //invalid IDs can crash the server
@@ -83,18 +100,16 @@ const UpdateCompany = async (req, res) => {
         return res.status(400).json({error : "Invalid ID"})
     }
 
-    const company = await CompanyModel.findByIdAndUpdate(id, {
-        name : req.body.name,
-        email: req.body.email, 
-        logo: logo.path, 
-        website:req.body.website
-    })
-
-    if(!company){
-        return res.status(404).json({error:"Comoany not found"})
+    //runs validator
+    try{
+        const company = await CompanyModel.findOneAndUpdate({_id : id}, update, {runValidators : true})
+        if(!company){
+            return res.status(404).json({error:"Company not found"})
+        }
+        res.status(200).json(company)
+    }catch(error){
+        res.status(400).json({error : error.message})
     }
-
-    res.status(200).json(company)
 }
 
 module.exports = {
