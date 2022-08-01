@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const validator = require('email-validator')
 
 const Schema = mongoose.Schema
 
@@ -13,7 +14,10 @@ const CompanySchema = new Schema({
         type : String,
         required : [true, "Company name is required."]
     },
-    email : String,
+    email : {
+        type : String,
+        validate: [validator.validate, "Invalid email."]
+    },
     logo : String,
     website : String
 }, {timestamps:true})

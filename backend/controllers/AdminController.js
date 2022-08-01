@@ -37,14 +37,19 @@ const GetOneCompany = async (req, res) => {
 
 //Add New Company
 const AddCompany = async (req, res) => {
-   const {name, email, logo, website} = req.body
+    const logo = req.file
 
-   try{
-        const new_company = await CompanyModel.create({name, email, logo, website})
+    try{
+        const new_company = await CompanyModel.create({
+            name: req.body.name, 
+            email: req.body.email, 
+            logo: logo.path, 
+            website:req.body.website
+        })
         res.status(200).json(new_company)
-   }catch(error){
+    }catch(error){
         return res.status(400).json({error : error.message})
-   }
+    }
 }
 
 //Delete a Company
@@ -70,6 +75,7 @@ const DeleteCompany = async (req, res) => {
 //update company
 const UpdateCompany = async (req, res) => {
     const {id} = req.params
+    const logo = req.file
 
     //checks if passed id is valid
     //invalid IDs can crash the server
@@ -77,7 +83,12 @@ const UpdateCompany = async (req, res) => {
         return res.status(400).json({error : "Invalid ID"})
     }
 
-    const company = await CompanyModel.findByIdAndUpdate(id, {...req.body})
+    const company = await CompanyModel.findByIdAndUpdate(id, {
+        name : req.body.name,
+        email: req.body.email, 
+        logo: logo.path, 
+        website:req.body.website
+    })
 
     if(!company){
         return res.status(404).json({error:"Comoany not found"})
