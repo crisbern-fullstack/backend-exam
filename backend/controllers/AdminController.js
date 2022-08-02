@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 const CompanyModel = require("../models/CompanyModel")
 const AdminModel = require("../models/AdminModel")
+const EmployeeModel = require("../models/EmployeeModel")
 const sizeOf = require("image-size")
 const fs = require("fs")
 
@@ -9,9 +10,9 @@ const fs = require("fs")
 const GetAllCompanies = async (req, res) => {
     try{
         const companies = await CompanyModel.find({}).sort({name: 1})
-        res.status(200).json(companies)
+        return res.status(200).json(companies)
     }catch(error){
-        res.status(400).json({error:error.message})
+        return res.status(400).json({error:error.message})
     }
 }
 
@@ -141,10 +142,74 @@ const UpdateCompany = async (req, res) => {
     }
 }
 
+//Employees Queries
+//Get all Employees
+const GetAllEmployees = async(req, res) => {
+    try{
+        const employees = await EmployeeModel.find({}).sort({name: 1})
+        return res.status(200).json(employees)
+    }catch(error){
+        return res.status(400).json({error:error.message})
+    }
+}
+
+
+//Add new Employee.
+const AddEmployee = async (req, res) => {
+    try{
+        const new_employee = await EmployeeModel.create(req.body)
+        return res.status(200).json(new_employee)
+    }catch(error){
+        return res.status(400).json({error : error.message})
+    }
+}
+
+//Get one Employee
+const GetOneEmployee = async (req, res) => {
+    const {id} = req.params
+
+    //checks if passed id is valid
+    //invalid IDs can crash the server
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({error : "Invalid ID"})
+    }
+
+    const employee = await EmployeeModel.findById(id)
+
+    if(!employee){
+       return res.status(404).json({message:"Company Not Found"})
+    }
+
+    return res.status(200).json(employee)
+}
+
+//Delete employee
+const DeleteEmployee = async (req, res) => {
+    const {id} = req.params
+
+    //checks if passed id is valid
+    //invalid IDs can crash the server
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({error : "Invalid ID"})
+    }
+
+    const deleted_employee = await EmployeeModel.findByIdAndDelete(id)
+
+    if(!deleted_employee){
+        return res.status(404).json({message : "Employee not found."})
+    }
+
+    return res.status(200).json(deleted_employee)
+}
+
 module.exports = {
     GetAllCompanies,
     AddCompany,
     GetOneCompany,
     DeleteCompany,
-    UpdateCompany
+    UpdateCompany,
+    AddEmployee,
+    GetAllEmployees,
+    GetOneEmployee,
+    DeleteEmployee
 }
