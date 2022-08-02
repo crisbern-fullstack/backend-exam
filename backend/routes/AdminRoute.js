@@ -1,34 +1,36 @@
 const express = require('express')
 const multer = require("multer")
+const sizeOf = require('image-size')
 
 //Multer Initialization
-
-//Multer Storage
-const storage = multer.diskStorage({
-    destination : (req, file, cb) => {
-        cb(null, "./storage/app/public")
-    },
-    filename: (req, file, cb) => {
-        const file_name = file.originalname
-        cb(null, file_name)
-    }
-})
 
 //Multer File Filter
 const fileFilter = (req, file, callback) => {
     const mime_type = file.mimetype
 
     if(mime_type === "image/jpeg" || mime_type === "image/png"){
-        callback(null, true)
+        return callback(null, true)
     }
     else{
         return callback(new Error("Invalid file format. Please upload an image with .jpeg or .png extension"))
     }
 }
 
+
 //needs fixing
 //study express error handler
 const uploadMiddleware = (req, res, next) => {
+    //multer storage
+    const storage = multer.diskStorage({
+        destination : (req, file, cb) => {
+            cb(null, "./storage/app/public")
+        },
+        filename: (req, file, cb) => {
+            const file_name = file.originalname
+            cb(null, file_name)
+        }
+    })
+
     const upload = multer({
         storage : storage,
         limits : {

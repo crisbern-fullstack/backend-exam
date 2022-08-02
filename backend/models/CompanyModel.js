@@ -1,32 +1,10 @@
 const mongoose = require('mongoose')
-const validator = require('email-validator')
+const {
+    customEmailValidator,
+    urlValidator
+} = require('./custom-validators')
 
 const Schema = mongoose.Schema
-
-//custom email validation
-//email-validator returns false if blank
-const customEmailValidator = (email) => {
-    if(email.length === 0){
-        return true
-    }
-
-    return validator.validate(email)
-}
-
-//url validation
-const urlValidator = (url) => {
-    if(url.length === 0){
-        return true
-    }
-
-    try{
-        const urlInput = new URL(url)
-    }catch(error){
-        return false
-    }
-
-    return true
-}
 
 /* Company Schema fields are as follows
 1. Name (required)

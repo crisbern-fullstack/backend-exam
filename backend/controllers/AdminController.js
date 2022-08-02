@@ -1,10 +1,10 @@
-const { request } = require("express")
-const { default: mongoose } = require("mongoose")
+const mongoose = require("mongoose")
 const CompanyModel = require("../models/CompanyModel")
-
+const AdminModel = require("../models/AdminModel")
+const sizeOf = require("image-size")
+const fs = require("fs")
 
 //QUERIES FOR COMPANY DATA
-
 //Get all companies
 const GetAllCompanies = async (req, res) => {
     try{
@@ -42,7 +42,20 @@ const AddCompany = async (req, res) => {
     //if no image is uploaded, the path will be blank
     if(req.file){
         logo = req.file.path
-        console.log(req.file.mimetype)
+        const image_dimension = sizeOf(logo)
+
+        //checks image dimensions if at least 100 x 100 pixels
+        if(image_dimension.height < 100 && image_dimension.width < 100){
+            //deletes image if smaller than 100 x 100 px.
+            fs.unlink(logo, (err) => {
+                if(err){
+                    return res.status(400).json({message : err.message})
+                }
+            })
+
+            //sends status and tells that the dimensions of the image is smaller than 100x100.
+            return res.status(400).json({message : "Image is too small. Minimum dimensions are 100px by 100px."})
+        }
     }
 
     try{
@@ -52,7 +65,7 @@ const AddCompany = async (req, res) => {
             logo: logo, 
             website:req.body.website
         })
-        res.status(200).json(new_company)
+        return res.status(200).json(new_company)
     }catch(error){
         return res.status(400).json({error : error.message})
     }
@@ -87,6 +100,21 @@ const UpdateCompany = async (req, res) => {
         update = {...req.body}
     }
     else{
+        const image_dimension = sizeOf(req.file.path)
+
+        //checks image dimensions if at least 100 x 100 pixels
+        if(image_dimension.height < 100 && image_dimension.width < 100){
+            //deletes image if smaller than 100 x 100 px.
+            fs.unlink(req.file.path, (err) => {
+                if(err){
+                    return res.status(400).json({message : err.message})
+                }
+            })
+
+            //sends status and tells that the dimensions of the image is smaller than 100x100.
+            return res.status(400).json({message : "Image is too small. Minimum dimensions are 100px by 100px."})
+        }
+
         update = {
             name : req.body.name,
             email : req.body.email,
