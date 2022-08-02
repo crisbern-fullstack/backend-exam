@@ -8,6 +8,7 @@ const app = express()
 
 ///middlewares
 app.use(express.json())
+app.use(express.static('storage/app/public'))
 app.use((req, res, next) => {
     console.log(req.path, req.method)
     next()
