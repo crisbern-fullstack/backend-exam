@@ -57,6 +57,8 @@ const AddCompany = async (req, res) => {
             //sends status and tells that the dimensions of the image is smaller than 100x100.
             return res.status(400).json({message : "Image is too small. Minimum dimensions are 100px by 100px."})
         }
+
+        logo = req.file.filename
     }
 
     try{
@@ -89,6 +91,15 @@ const DeleteCompany = async (req, res) => {
         return res.status(404).json({message : "Company not found"})
     }
 
+    //deletes logo if it exists
+    if(deleted_company.logo){
+        fs.unlink('storage/app/public/' + deleted_company.logo, (err) => {
+            if(err) {
+                console.log(err)
+            }
+        })
+    }
+
     res.status(200).json(deleted_company)
 }
 
@@ -119,7 +130,7 @@ const UpdateCompany = async (req, res) => {
         update = {
             name : req.body.name,
             email : req.body.email,
-            logo : req.file.path,
+            logo : req.file.filename,
             website : req.body.website
         }
     }
@@ -136,9 +147,19 @@ const UpdateCompany = async (req, res) => {
         if(!company){
             return res.status(404).json({error:"Company not found"})
         }
-        res.status(200).json(company)
+
+        //deletes past logo and replaces it with the new one
+        if(company.logo){
+            fs.unlink('storage/app/public/' + company.logo, (err) => {
+                if(err) {
+                    console.log(err)
+                }
+            })
+        }
+
+        return res.status(200).json(company)
     }catch(error){
-        res.status(400).json({error : error.message})
+        return res.status(400).json({error : error.message})
     }
 }
 
@@ -202,6 +223,28 @@ const DeleteEmployee = async (req, res) => {
     return res.status(200).json(deleted_employee)
 }
 
+//update employees
+const UpdateEmployee = async (req, res) => {
+    const {id} = req.params
+
+    //checks if passed id is valid
+    //invalid IDs can crash the server
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({error : "Invalid ID"})
+    }
+
+    //runs validator
+    try{
+        const employee = await EmployeeModel.findOneAndUpdate({_id : id}, {...req.body})
+        if(!employee){
+            return res.status(404).json({error:"Employee not found"})
+        }
+        return res.status(200).json(employee)
+    }catch(error){
+        return res.status(400).json({error : error.message})
+    }
+}
+
 module.exports = {
     GetAllCompanies,
     AddCompany,
@@ -211,5 +254,6 @@ module.exports = {
     AddEmployee,
     GetAllEmployees,
     GetOneEmployee,
-    DeleteEmployee
+    DeleteEmployee,
+    UpdateEmployee
 }

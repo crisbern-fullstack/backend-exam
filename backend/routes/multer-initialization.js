@@ -1,4 +1,5 @@
 const multer = require("multer")
+const path = require("path")
 
 //Multer Initialization
 //Multer File Filter
@@ -22,7 +23,10 @@ const uploadMiddleware = (req, res, next) => {
             cb(null, "./storage/app/public")
         },
         filename: (req, file, cb) => {
-            const file_name = file.originalname
+            let company_name = req.body.name
+            company_name = company_name.replaceAll(" ", "-")
+
+            const file_name = Date.now() + "-" + company_name + path.extname(file.originalname) //name format: <date in milliseconds>-<company name>-<file extension>
             cb(null, file_name)
         }
     })

@@ -11,7 +11,8 @@ const {
     AddEmployee,
     GetAllEmployees,
     GetOneEmployee,
-    DeleteEmployee
+    DeleteEmployee,
+    UpdateEmployee
 } = require("../controllers/AdminController")
 
 //import the express router
@@ -46,6 +47,9 @@ router.get('/employee/:id', GetOneEmployee)
 
 //Delete employee
 router.delete('/delete-employee/:id', DeleteEmployee)
+
+//Update employee
+router.patch('/update-employee/:id', UpdateEmployee)
 
 //exporting created routes
 module.exports = router
