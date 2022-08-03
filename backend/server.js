@@ -2,7 +2,8 @@ require('dotenv').config()
 
 const express = require('express') //express import
 const mongoose = require('mongoose') //mongoose import 
-const DataQueryRoute = require('./routes/DataQueryRoute')
+const DataQueryRoute = require('./routes/DataQueryRoute') //Routes for querying employees and companies
+const AdminRoute = require('./routes/AdminRoute')
 const session = require("express-session")
 const passport = require("passport")
 
@@ -28,7 +29,12 @@ app.use((req, res, next) => {
 })
 
 //routes
+
+//Data query for companies and employees
 app.use('/api', DataQueryRoute)
+
+//admin management
+app.use('/admin', AdminRoute)
 
 mongoose.connect(process.env.MONGO_URI)
  .then(() => {

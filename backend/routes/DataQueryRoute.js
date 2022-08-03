@@ -13,7 +13,7 @@ const {
     GetOneEmployee,
     DeleteEmployee,
     UpdateEmployee
-} = require("../controllers/AdminController")
+} = require("../controllers/DataQueryController")
 
 //import the express router
 const router = express.Router()
