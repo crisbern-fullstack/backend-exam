@@ -149,7 +149,7 @@ const UpdateCompany = async (req, res) => {
         }
 
         //deletes past logo and replaces it with the new one
-        if(company.logo){
+        if(company.logo && req.file){
             fs.unlink('storage/app/public/' + company.logo, (err) => {
                 if(err) {
                     console.log(err)
