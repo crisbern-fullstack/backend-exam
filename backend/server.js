@@ -6,6 +6,7 @@ const DataQueryRoute = require('./routes/DataQueryRoute') //Routes for querying 
 const AdminRoute = require('./routes/AdminRoute')
 const session = require("express-session")
 const passport = require("passport")
+const initializePassport = require("./passport-config")
 
 const app = express()
 
@@ -21,6 +22,7 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
+initializePassport(passport)
 
 //print in the console what kind of request was made
 app.use((req, res, next) => {
@@ -29,6 +31,11 @@ app.use((req, res, next) => {
 })
 
 //routes
+
+//Authentication
+app.post('/login', passport.authenticate('local'), (req, res) => {
+    res.status(200).json({message:"authenticated"})
+})
 
 //Data query for companies and employees
 app.use('/api', DataQueryRoute)
