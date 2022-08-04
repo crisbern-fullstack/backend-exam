@@ -174,17 +174,6 @@ const GetAllEmployees = async(req, res) => {
 }
 
 
-//Add new Employee.
-const AddEmployee = async (req, res) => {
-    try{
-        req.body.password = "password"
-        const new_employee = await EmployeeModel.create(req.body)
-        return res.status(200).json(new_employee)
-    }catch(error){
-        return res.status(400).json({error : error.message})
-    }
-}
-
 //Get one Employee
 const GetOneEmployee = async (req, res) => {
     const {id} = req.params
@@ -251,7 +240,6 @@ module.exports = {
     GetOneCompany,
     DeleteCompany,
     UpdateCompany,
-    AddEmployee,
     GetAllEmployees,
     GetOneEmployee,
     DeleteEmployee,

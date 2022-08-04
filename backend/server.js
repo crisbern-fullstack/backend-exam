@@ -3,10 +3,10 @@ require('dotenv').config()
 const express = require('express') //express import
 const mongoose = require('mongoose') //mongoose import 
 const DataQueryRoute = require('./routes/DataQueryRoute') //Routes for querying employees and companies
-const AdminRoute = require('./routes/AdminRoute')
+const AuthenticationRoute = require('./routes/AuthenticationRoute') //Routes for Authentication
 const session = require("express-session")
 const passport = require("passport")
-const initializePassport = require("./passport-config")
+// const initializePassport = require("./passport-config")
 
 const app = express()
 
@@ -22,7 +22,7 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
-initializePassport(passport)
+// initializePassport(passport)
 
 //print in the console what kind of request was made
 app.use((req, res, next) => {
@@ -33,15 +33,10 @@ app.use((req, res, next) => {
 //routes
 
 //Authentication
-app.post('/login', passport.authenticate('local'), (req, res) => {
-    res.status(200).json({message:"authenticated"})
-})
+app.use('/',AuthenticationRoute)
 
 //Data query for companies and employees
 app.use('/api', DataQueryRoute)
-
-//admin management
-app.use('/admin', AdminRoute)
 
 mongoose.connect(process.env.MONGO_URI)
  .then(() => {

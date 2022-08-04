@@ -27,7 +27,7 @@ const EmployeeSchema = new Schema({
     email : {
         type : String,
         validate : [customEmailValidator, "Invalid email address."],
-        unique : true,
+        unique : [true, "Email already exists."],
         required: [true, "Email is required!"]
     },
     password : {
