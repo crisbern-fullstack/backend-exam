@@ -177,6 +177,7 @@ const GetAllEmployees = async(req, res) => {
 //Add new Employee.
 const AddEmployee = async (req, res) => {
     try{
+        req.body.password = "password"
         const new_employee = await EmployeeModel.create(req.body)
         return res.status(200).json(new_employee)
     }catch(error){

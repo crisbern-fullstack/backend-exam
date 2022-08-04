@@ -1,4 +1,4 @@
-const validator = require('email-validator')
+const validator = require('validator')
 //custom email validation
 //email-validator returns false if blank
 const customEmailValidator = (email) => {
@@ -6,7 +6,7 @@ const customEmailValidator = (email) => {
         return true
     }
 
-    return validator.validate(email)
+    return validator.isEmail(email)
 }
 
 //url validation
@@ -15,13 +15,7 @@ const urlValidator = (url) => {
         return true
     }
 
-    try{
-        const urlInput = new URL(url)
-    }catch(error){
-        return false
-    }
-
-    return true
+    return validator.isURL(url)
 }
 
 module.exports = {

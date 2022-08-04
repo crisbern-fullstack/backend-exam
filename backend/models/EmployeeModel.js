@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const {customEmailValidator} = require('./custom-validators')
+const bcrypt = require('bcrypt')
 
 const Schema = mongoose.Schema
 
@@ -25,7 +26,9 @@ const EmployeeSchema = new Schema({
     },
     email : {
         type : String,
-        validate : [customEmailValidator, "Invalid email address."]
+        validate : [customEmailValidator, "Invalid email address."],
+        unique : true,
+        required: [true, "Email is required!"]
     },
     password : {
         type : String,
@@ -33,7 +36,21 @@ const EmployeeSchema = new Schema({
     },
     phone : {
         type: Number
+    },
+    is_admin : {
+        type: Boolean,
+        required : [true, "is admin role is required"]
     }
 }, {timestamps:true})
+
+//hashes passwords
+EmployeeSchema.pre('save', async function(next){
+    const saltRounds = 10;
+    const salt = await bcrypt.genSalt(saltRounds)
+
+    this.password = await bcrypt.hash(this.password, salt)
+
+    next()
+})
 
 module.exports = mongoose.model("EmployeeSchema", EmployeeSchema)
