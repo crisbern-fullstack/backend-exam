@@ -3,8 +3,8 @@ const EmployeeModel = require('../models/EmployeeModel')
 const bcrypt = require('bcrypt')
 require('dotenv').config()
 
-const createToken = async (_id, is_admin) => {
-    return jwt.sign({ _id, is_admin }, process.env.JWT_SECRET,{
+const createToken = async (_id) => {
+    return jwt.sign({ _id}, process.env.JWT_SECRET,{
         expiresIn: '3d'
     })
 }
@@ -20,12 +20,33 @@ const CheckAuthentication = async (req, res, next) => {
     const token = authorization.split(' ')[1]
 
     try{
-        const {_id, is_admin} = jwt.verify(token, process.env.JWT_SECRET)
+        const {_id} = jwt.verify(token, process.env.JWT_SECRET)
 
         const user = await EmployeeModel.findById(_id).select('_id email')
         next()
     }catch(err){
         return res.status(401).json({message:"Unauthorized."})
+    }
+}
+
+const IsAdmin = async (req, res, next) => {
+    const {authorization} = req.headers
+
+    const token = authorization.split(' ')[1]
+
+    try{
+        const {_id} = jwt.verify(token, process.env.JWT_SECRET)
+
+        const user = await EmployeeModel.findById(_id).select('_id email is_admin')
+
+        if(user.is_admin){
+            next()
+        }
+        else{
+            return res.status(401).json({message:"Logged in. But unauthorized to make this request."})
+        }
+    }catch(err){
+        return res.status(401).json({message:"Logged in. But unauthorized to make this request."})
     }
 }
 
@@ -36,7 +57,7 @@ const AddEmployee = async (req, res) => {
         req.body.password = "password"
         const new_employee = await EmployeeModel.create(req.body)
 
-        const token = await createToken(new_employee._id, new_employee.is_admin)
+        const token = await createToken(new_employee._id)
 
         return res.status(200).json({email:new_employee._id, token:token})
     }catch(error){
@@ -76,4 +97,5 @@ module.exports = {
     CheckAuthentication,
     AddEmployee,
     Login,
+    IsAdmin
 }

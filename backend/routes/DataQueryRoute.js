@@ -11,10 +11,13 @@ const {
     GetAllEmployees,
     GetOneEmployee,
     DeleteEmployee,
-    UpdateEmployee
+    UpdateEmployee,
 } = require("../controllers/DataQueryController")
 
-const {CheckAuthentication} = require('../controllers/AuthenticationController')
+const {
+    CheckAuthentication,
+    IsAdmin
+} = require('../controllers/AuthenticationController')
 
 //import the express router
 const router = express.Router()
@@ -28,14 +31,14 @@ router.get('/all-companies', GetAllCompanies)
 //Get one company
 router.get('/company/:id', GetOneCompany)
 
-//Add New Company
-router.post('/new-company', uploadMiddleware, AddCompany)
+//Add New Company (admin only)
+router.post('/new-company', IsAdmin, uploadMiddleware, AddCompany)
 
-//Delete a company
-router.delete('/delete-company/:id', DeleteCompany)
+//Delete a company (admin only)
+router.delete('/delete-company/:id', IsAdmin, DeleteCompany)
 
-//Update a company
-router.patch('/update-company/:id', uploadMiddleware, UpdateCompany)
+//Update a company (admin only)
+router.patch('/update-company/:id', IsAdmin, uploadMiddleware, UpdateCompany)
 
 
 //Employees
