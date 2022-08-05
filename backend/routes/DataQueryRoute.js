@@ -49,10 +49,10 @@ router.get('/all-employees', GetAllEmployees)
 router.get('/employee/:id', GetOneEmployee)
 
 //Delete employee
-router.delete('/delete-employee/:id', DeleteEmployee)
+router.delete('/delete-employee/:id', isAdmin, DeleteEmployee)
 
 //Update employee
-router.patch('/update-employee/:id', UpdateEmployee)
+router.patch('/update-employee/:id', isAdmin, UpdateEmployee)
 
 //exporting created routes
 module.exports = router
