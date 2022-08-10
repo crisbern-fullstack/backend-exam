@@ -54,11 +54,9 @@ const AddCompany = async (req, res) => {
       });
 
       //sends status and tells that the dimensions of the image is smaller than 100x100.
-      return res
-        .status(400)
-        .json({
-          message: "Image is too small. Minimum dimensions are 100px by 100px.",
-        });
+      return res.status(400).json({
+        message: "Image is too small. Minimum dimensions are 100px by 100px.",
+      });
     }
 
     logo = req.file.filename;
@@ -126,11 +124,9 @@ const UpdateCompany = async (req, res) => {
       });
 
       //sends status and tells that the dimensions of the image is smaller than 100x100.
-      return res
-        .status(400)
-        .json({
-          message: "Image is too small. Minimum dimensions are 100px by 100px.",
-        });
+      return res.status(400).json({
+        message: "Image is too small. Minimum dimensions are 100px by 100px.",
+      });
     }
 
     update = {
@@ -147,10 +143,12 @@ const UpdateCompany = async (req, res) => {
     return res.status(400).json({ error: "Invalid ID" });
   }
 
-  //runs validator
   try {
+    const old_photo = await CompanyModel.findOne({ _id: id }).select("logo");
+
     const company = await CompanyModel.findOneAndUpdate({ _id: id }, update, {
-      runValidators: true,
+      runValidators: true, //runs validator
+      new: true,
     });
     if (!company) {
       return res.status(404).json({ error: "Company not found" });
@@ -158,7 +156,7 @@ const UpdateCompany = async (req, res) => {
 
     //deletes past logo and replaces it with the new one
     if (company.logo && req.file) {
-      fs.unlink("storage/app/public/" + company.logo, (err) => {
+      fs.unlink("storage/app/public/" + old_photo.logo, (err) => {
         if (err) {
           console.log(err);
         }
