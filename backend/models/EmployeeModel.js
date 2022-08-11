@@ -23,12 +23,7 @@ const EmployeeSchema = new Schema(
       required: [true, "Last name is required."],
     },
     company: {
-      name: {
-        type: String,
-      },
-      id: {
-        type: String,
-      },
+      type: String,
     },
     email: {
       type: String,
