@@ -36,7 +36,7 @@ const EmployeeSchema = new Schema(
       required: [true, "Password"],
     },
     phone: {
-      type: Number,
+      type: String,
     },
     is_admin: {
       type: Boolean,
