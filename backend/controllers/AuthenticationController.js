@@ -61,7 +61,7 @@ const AddEmployee = async (req, res) => {
 
     const token = await createToken(new_employee._id);
 
-    return res.status(200).json({ email: new_employee.email, token: token });
+    return res.status(200).json(new_employee);
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
