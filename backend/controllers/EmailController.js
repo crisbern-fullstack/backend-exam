@@ -1,4 +1,5 @@
 const { sendEmail } = require("../email-test");
+const EmailModel = require("../models/EmailModel");
 
 const SendEmail = async (req, res) => {
   const receivers = req.body.receivers;
@@ -11,6 +12,7 @@ const SendEmail = async (req, res) => {
   };
   try {
     await sendEmail(email_args);
+    await EmailModel.create(email_args);
     return res.status(200).json({ message: "Email Succesfully Sent" });
   } catch (error) {
     res.status(400).json({ message: error });

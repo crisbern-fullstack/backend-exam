@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const { customEmailValidator, urlValidator } = require("./custom-validators");
-const validator = require("validator");
 
 const Schema = mongoose.Schema;
 
