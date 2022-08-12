@@ -3,6 +3,7 @@ const CompanyModel = require("../models/CompanyModel");
 const EmployeeModel = require("../models/EmployeeModel");
 const sizeOf = require("image-size");
 const fs = require("fs");
+const { sendEmail } = require("../email-test");
 
 //QUERIES FOR COMPANY DATA
 //Get all companies
@@ -69,6 +70,22 @@ const AddCompany = async (req, res) => {
       logo: logo,
       website: req.body.website,
     });
+
+    //get emails of all employees [{email: '<email value>'}]
+    const employee_emails_objects = await EmployeeModel.find().select(
+      "email -_id"
+    );
+    let employee_emails = []; //[email, email]
+
+    employee_emails_objects.map((mapped_email) =>
+      employee_emails.push(mapped_email.email)
+    );
+
+    sendEmail({
+      receivers: employee_emails,
+      company: new_company.name,
+    });
+
     return res.status(200).json(new_company);
   } catch (error) {
     return res.status(400).json({ error: error.message });
