@@ -28,11 +28,12 @@ const GetOneCompany = async (req, res) => {
   }
 
   const company = await CompanyModel.findById(id);
-  const company_json = await company.toJSON(); //done to attach employees properties
 
   if (!company) {
     return res.status(404).json({ message: "Company Not Found" });
   }
+
+  const company_json = company.toJSON(); //done to attach employees properties
 
   const company_employees = await EmployeeModel.find({ company: id }); //get employees of the company
   company_json.employees = company_employees; //attaches the employees to the body
