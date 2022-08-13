@@ -15,8 +15,8 @@ const SendEmail = async (req, res) => {
     await EmailModel.create(email_args);
     return res.status(200).json({ message: "Email Succesfully Sent" });
   } catch (error) {
-    res.status(400).json({ message: error });
     console.log(error);
+    return res.status(400).json({ message: error });
   }
 };
 

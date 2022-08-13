@@ -28,12 +28,16 @@ const GetOneCompany = async (req, res) => {
   }
 
   const company = await CompanyModel.findById(id);
+  const company_json = await company.toJSON(); //done to attach employees properties
 
   if (!company) {
     return res.status(404).json({ message: "Company Not Found" });
   }
 
-  res.status(200).json(company);
+  const company_employees = await EmployeeModel.find({ company: id }); //get employees of the company
+  company_json.employees = company_employees; //attaches the employees to the body
+
+  return res.status(200).json(company_json);
 };
 
 //Add New Company
@@ -81,13 +85,28 @@ const AddCompany = async (req, res) => {
       employee_emails.push(mapped_email.email)
     );
 
-    sendEmail({
+    await sendEmail({
+      sender: '"Admin" admin@admin.com',
+      subject: `A new company has been added - ${new_company.name}`,
+      text: "Test!!!",
       receivers: employee_emails,
       company: new_company.name,
     });
 
     return res.status(200).json(new_company);
   } catch (error) {
+    //File uploads even other field validations failed
+    //this if statemet deletes the image if other validations faiked
+    if (req.file) {
+      logo = req.file.path;
+
+      fs.unlink(logo, (err) => {
+        if (err) {
+          return res.status(400).json({ message: err.message });
+        }
+      });
+    }
+
     return res.status(400).json({ error: error.message });
   }
 };
@@ -167,6 +186,8 @@ const UpdateCompany = async (req, res) => {
       runValidators: true, //runs validator
       new: true,
     });
+    const company_json = await company.toJSON();
+
     if (!company) {
       return res.status(404).json({ error: "Company not found" });
     }
@@ -180,8 +201,22 @@ const UpdateCompany = async (req, res) => {
       });
     }
 
-    return res.status(200).json(company);
+    const company_employees = await EmployeeModel.find({ company: id }); //get employees of the company
+    company_json.employees = company_employees; //attaches the employees to the body
+
+    return res.status(200).json(company_json);
   } catch (error) {
+    //File uploads even other field validations failed
+    //this if statemet deletes the image if other validations faiked
+    if (req.file) {
+      logo = req.file.path;
+
+      fs.unlink(logo, (err) => {
+        if (err) {
+          return res.status(400).json({ message: err.message });
+        }
+      });
+    }
     return res.status(400).json({ error: error.message });
   }
 };
