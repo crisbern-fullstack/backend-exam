@@ -9,6 +9,8 @@ const EmailSchema = new Schema(
     subject: String,
     text: String,
     html: String,
+    sent: Boolean,
+    date: Date,
   },
   { timestamps: true }
 );
