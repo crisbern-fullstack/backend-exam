@@ -3,6 +3,7 @@ const CompanyModel = require("../models/CompanyModel");
 const EmployeeModel = require("../models/EmployeeModel");
 const sizeOf = require("image-size");
 const fs = require("fs");
+const bcrypt = require("bcrypt");
 const { sendEmail } = require("../email-test");
 
 //QUERIES FOR COMPANY DATA
@@ -279,6 +280,26 @@ const UpdateEmployee = async (req, res) => {
   //invalid IDs can crash the server
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: "Invalid ID" });
+  }
+
+  if (req.body.hasOwnProperty("current_password")) {
+    const fetched_employee = await EmployeeModel.findById(id);
+
+    const matched = await bcrypt.compare(
+      req.body.current_password,
+      fetched_employee.password
+    );
+
+    if (!matched) {
+      return res.status(400).json({ error: "Wrong password." });
+    } else {
+      //hash
+      //pre does not run on update
+      const saltRounds = 10;
+      const salt = await bcrypt.genSalt(saltRounds);
+
+      req.body.password = await bcrypt.hash(req.body.password, salt);
+    }
   }
 
   //runs validator

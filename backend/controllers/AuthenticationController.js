@@ -88,6 +88,7 @@ const Login = async (req, res) => {
     return res.status(200).json({
       email: user.email,
       token: token,
+      isAdmin: user.is_admin,
     });
   }
 
