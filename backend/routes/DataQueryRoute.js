@@ -12,6 +12,7 @@ const {
   GetOneEmployee,
   DeleteEmployee,
   UpdateEmployee,
+  GetMeta,
 } = require("../controllers/DataQueryController");
 
 const {
@@ -52,6 +53,8 @@ router.delete("/delete-employee/:id", IsAdmin, DeleteEmployee);
 
 //Update employee
 router.patch("/update-employee/:id", IsAdmin, UpdateEmployee);
+
+router.get("/meta", GetMeta);
 
 //exporting created routes
 module.exports = router;

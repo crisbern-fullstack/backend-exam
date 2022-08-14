@@ -299,6 +299,16 @@ const UpdateEmployee = async (req, res) => {
   }
 };
 
+const GetMeta = async (req, res) => {
+  try {
+    const companies = await CompanyModel.countDocuments();
+    const employees = await EmployeeModel.countDocuments();
+    return res.status(200).json({ companies: companies, employees: employees });
+  } catch (error) {
+    return res.status(400).json({ message: "Error in loading data." });
+  }
+};
+
 module.exports = {
   GetAllCompanies,
   AddCompany,
@@ -309,4 +319,5 @@ module.exports = {
   GetOneEmployee,
   DeleteEmployee,
   UpdateEmployee,
+  GetMeta,
 };
