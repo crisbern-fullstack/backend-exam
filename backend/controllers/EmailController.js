@@ -32,6 +32,24 @@ const GetOneEmail = async (req, res) => {
   return res.status(200).json(email);
 };
 
+const DeleteEmail = async (req, res) => {
+  const { id } = req.params;
+
+  //checks if passed id is valid
+  //invalid IDs can crash the server
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "Invalid ID" });
+  }
+
+  const deleted_mail = await EmailModel.findByIdAndDelete(id);
+
+  if (!deleted_mail) {
+    return res.status(404).json({ message: "Mail not found." });
+  }
+
+  return res.status(200).json(deleted_mail);
+};
+
 const SendEmail = async (req, res) => {
   const receivers = req.body.receivers;
   const email_args = {
@@ -62,6 +80,7 @@ const SendScheduledEmail = async (req, res) => {
     text: req.body.text,
     html: req.body.html,
     date: req.body.date,
+    sent: req.body.sent,
   };
 
   const scheduled_email = await EmailModel.create(email_args);
@@ -82,4 +101,10 @@ const SendScheduledEmail = async (req, res) => {
   res.end();
 };
 
-module.exports = { AllEmails, GetOneEmail, SendEmail, SendScheduledEmail };
+module.exports = {
+  AllEmails,
+  GetOneEmail,
+  SendEmail,
+  SendScheduledEmail,
+  DeleteEmail,
+};

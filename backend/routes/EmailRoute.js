@@ -12,6 +12,7 @@ const {
   AllEmails,
   SendEmail,
   GetOneEmail,
+  DeleteEmail,
   SendScheduledEmail,
 } = require("../controllers/EmailController");
 
@@ -20,6 +21,8 @@ router.use(CheckAuthentication); //checks if user is logged in
 router.get("/emails", AllEmails);
 
 router.post("/send-email", SendEmail);
+
+router.delete("/delete-email/:id", DeleteEmail);
 
 router.get("/emails/:id", GetOneEmail);
 
