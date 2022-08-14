@@ -3,6 +3,8 @@ const EmailModel = require("../models/EmailModel");
 const schedule = require("node-schedule");
 const mongoose = require("mongoose");
 
+let jobs = {};
+
 const AllEmails = async (req, res) => {
   try {
     const emails = await EmailModel.find({ sent: req.query.sent }).sort({
@@ -47,6 +49,10 @@ const DeleteEmail = async (req, res) => {
     return res.status(404).json({ message: "Mail not found." });
   }
 
+  if (!deleted_mail.sent) {
+    jobs[deleted_mail._id].cancel();
+  }
+
   return res.status(200).json(deleted_mail);
 };
 
@@ -87,7 +93,7 @@ const SendScheduledEmail = async (req, res) => {
   //res.write(JSON.stringify({ message: "Email successfully scheduled" }));
   res.status(200).json({ message: "Email successfully scheduled" });
 
-  const job = schedule.scheduleJob(req.body.date, async () => {
+  jobs[scheduled_email._id] = schedule.scheduleJob(req.body.date, async () => {
     try {
       await sendEmail(email_args);
       const updateSent = await EmailModel.findOneAndUpdate(
