@@ -4,6 +4,8 @@ const { uploadMiddleware } = require("./multer-initialization");
 //controllers
 const {
   GetAllCompanies,
+  GetPaginatedCompanies,
+  GetCompaniesCount,
   AddCompany,
   GetOneCompany,
   DeleteCompany,
@@ -28,6 +30,10 @@ router.use(CheckAuthentication);
 
 //Get All Companies
 router.get("/all-companies", GetAllCompanies);
+
+//Get Companies but Paginated
+
+router.get("/companies-count", GetCompaniesCount);
 
 //Get one company
 router.get("/company/:id", GetOneCompany);

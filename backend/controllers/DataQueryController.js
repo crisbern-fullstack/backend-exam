@@ -9,11 +9,34 @@ const { sendEmail } = require("../email-test");
 //QUERIES FOR COMPANY DATA
 //Get all companies
 const GetAllCompanies = async (req, res) => {
+  const sortBy = {};
+  const field = req.query.field;
+  const order = parseInt(req.query.order);
+  const limit = req.query.limit;
+  const skip = req.query.skip;
+
+  sortBy[field] = order;
+
   try {
-    const companies = await CompanyModel.find({}).sort({ name: 1 });
+    const companies = await CompanyModel.find({})
+      .skip(skip)
+      .limit(limit)
+      .sort(sortBy);
+
     return res.status(200).json(companies);
   } catch (error) {
     return res.status(400).json({ error: error.message });
+  }
+};
+
+const GetPaginatedCompanies = async (req, res) => {};
+
+const GetCompaniesCount = async (req, res) => {
+  try {
+    const companies = await CompanyModel.countDocuments();
+    return res.status(200).json({ companies_count: companies });
+  } catch (error) {
+    return res.status(400).json({ message: "Error in loading data." });
   }
 };
 
@@ -342,4 +365,6 @@ module.exports = {
   DeleteEmployee,
   UpdateEmployee,
   GetMeta,
+  GetCompaniesCount,
+  GetPaginatedCompanies,
 };

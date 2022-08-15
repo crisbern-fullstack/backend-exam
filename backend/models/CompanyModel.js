@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 const { customEmailValidator, urlValidator } = require("./custom-validators");
 
 const Schema = mongoose.Schema;
@@ -27,5 +28,7 @@ const CompanySchema = new Schema(
   },
   { timestamps: true }
 );
+
+CompanySchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("CompanySchema", CompanySchema);
