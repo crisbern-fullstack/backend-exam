@@ -90,7 +90,8 @@ const AddCompany = async (req, res) => {
     await sendEmail({
       sender: '"Admin" admin@admin.com',
       subject: `A new company has been added - ${new_company.name}`,
-      text: "Test!!!",
+      text: `<ul> <li><b>Company Name: </b>${new_company.name} </li> <li><b>Email:</b> ${new_company.email}</li> <li><b>Website:</b> ${new_company.website}</li> </ul>`,
+      html: `<ul> <li><b>Company Name: </b>${new_company.name} </li> <li><b>Email:</b> ${new_company.email}</li> <li><b>Website:</b> ${new_company.website}</li> </ul>`,
       receivers: employee_emails,
       company: new_company.name,
     });

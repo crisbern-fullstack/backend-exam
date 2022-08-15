@@ -73,7 +73,9 @@ const SendEmail = async (req, res) => {
     return res.status(200).json({ message: "Email Succesfully Sent" });
   } catch (error) {
     console.log(error);
-    return res.status(400).json({ message: error });
+    return res.status(400).json({
+      error: "Sending failed. Make sure you filled up the fields appropriately",
+    });
   }
 };
 
