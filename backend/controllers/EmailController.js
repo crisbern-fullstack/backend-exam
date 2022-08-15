@@ -50,7 +50,11 @@ const DeleteEmail = async (req, res) => {
   }
 
   if (!deleted_mail.sent) {
-    jobs[deleted_mail._id].cancel();
+    try {
+      jobs[deleted_mail._id].cancel();
+    } catch (error) {
+      console.log("Job does not exist");
+    }
   }
 
   return res.status(200).json(deleted_mail);
