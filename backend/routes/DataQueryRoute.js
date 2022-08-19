@@ -43,16 +43,16 @@ router.patch("/company/:id", IsAdmin, fileUpload, UpdateCompany);
 
 //Employees
 //Get All Employees
-router.get("/all-employees", GetAllEmployees);
+router.get("/employees", GetAllEmployees);
 
 //Get one employee
 router.get("/employee/:id", GetOneEmployee);
 
 //Delete employee
-router.delete("/delete-employee/:id", IsAdmin, DeleteEmployee);
+router.delete("/employee/:id", IsAdmin, DeleteEmployee);
 
 //Update employee
-router.patch("/update-employee/:id", IsAdmin, UpdateEmployee);
+router.patch("/employee/:id", IsAdmin, UpdateEmployee);
 
 //gets data such as number of users and employees
 router.get("/meta", GetMeta);
