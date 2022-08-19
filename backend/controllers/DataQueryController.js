@@ -29,8 +29,6 @@ const GetAllCompanies = async (req, res) => {
   }
 };
 
-const GetPaginatedCompanies = async (req, res) => {};
-
 const GetCompaniesCount = async (req, res) => {
   try {
     const companies = await CompanyModel.countDocuments();
@@ -365,6 +363,4 @@ module.exports = {
   DeleteEmployee,
   UpdateEmployee,
   GetMeta,
-  GetCompaniesCount,
-  GetPaginatedCompanies,
 };
