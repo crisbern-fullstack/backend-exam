@@ -15,8 +15,6 @@ const AddEmployee = async (req, res) => {
     req.body.password = "password";
     const new_employee = await EmployeeModel.create(req.body);
 
-    const token = await createToken(new_employee._id);
-
     return res.status(200).json(new_employee);
   } catch (error) {
     return res.status(400).json({ error: error.message });

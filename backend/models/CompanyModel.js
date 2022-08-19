@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate-v2");
-const { customEmailValidator, urlValidator } = require("./custom-validators");
+const { urlValidator, emailValidator } = require("../utils/schema-validators");
 
 const Schema = mongoose.Schema;
 
@@ -18,7 +18,7 @@ const CompanySchema = new Schema(
     },
     email: {
       type: String,
-      validate: [customEmailValidator, "Invalid email."],
+      validate: [emailValidator, "Invalid email."],
     },
     logo: String,
     website: {

@@ -19,9 +19,9 @@ router.get("/emails", AllEmails);
 
 router.post("/send-email", SendEmail);
 
-router.delete("/delete-email/:id", DeleteEmail);
+router.delete("/email/:id", DeleteEmail);
 
-router.get("/emails/:id", GetOneEmail);
+router.get("/email/:id", GetOneEmail);
 
 router.post("/send-scheduled-email", SendScheduledEmail);
 

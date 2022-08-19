@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { customEmailValidator } = require("./custom-validators");
+const { emailValidator } = require("../utils/schema-validators");
 const bcrypt = require("bcrypt");
 
 const Schema = mongoose.Schema;
@@ -27,7 +27,7 @@ const EmployeeSchema = new Schema(
     },
     email: {
       type: String,
-      validate: [customEmailValidator, "Invalid email address."],
+      validate: [emailValidator, "Invalid email address."],
       unique: [true, "Email already exists."],
       required: [true, "Email is required!"],
     },
